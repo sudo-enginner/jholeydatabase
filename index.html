@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jholey Database</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f7f7f7;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 32px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .search-container input {
+    padding: 10px 15px;
+    width: 250px;
+    max-width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  .help-btn {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .help-btn:hover {
+    background: #0056b3;
+  }
+
+  /* Gallery */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px;
+  }
+
+  .card {
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s;
+    background: #fff;
+  }
+
+  .card:hover {
+    transform: scale(1.05);
+  }
+
+  .card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .card p {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  /* Modals */
+  .modal {
+    display: none; 
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    justify-content: center; 
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    text-align: center;
+  }
+
+  .modal img {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 10px;
+  }
+
+  .close-btn {
+    margin-top: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+    background: #333;
+    color: #fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Jholey Database</h1>
+  <div class="header-right">
+    <button id="help-btn" class="help-btn">How to Upload</button>
+    <div class="search-container">
+      <input type="text" id="search" placeholder="Enter bheda's name">
+    </div>
+    
+  </div>
+</div>
+
+<!-- Gallery -->
+<div class="grid" id="gallery"></div>
+
+<!-- Image Modal -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modal-title"></h2>
+    <img id="modal-img" src="" alt="">
+    <p id="modal-desc"></p>
+    <button class="close-btn" id="close-btn">Close</button>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal" id="help-modal">
+  <div class="modal-content">
+    <h2>How to Upload</h2>
+    <p>Instructions to upload a new Jholey:</p>
+    <ul style="text-align: left;">
+      <li>Step 1: Find Jholey.</li>
+      <li>Step 2: Collect <strong>name</strong>, <strong>description</strong>, and <strong>image URL or Image</strong>.</li>
+      <li>Step 3: Send it to this page.</li>
+      <li>Step 4: The new entry will appear after a quick review, atmost 24 hr.</li>
+    </ul>
+    <button class="close-btn" id="help-close-btn">Close</button>
+  </div>
+</div>
+
+<script>
+const galleryEl = document.getElementById('gallery');
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalImg = document.getElementById('modal-img');
+const modalDesc = document.getElementById('modal-desc');
+const closeBtn = document.getElementById('close-btn');
+
+const searchInput = document.getElementById('search');
+
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
+const helpCloseBtn = document.getElementById('help-close-btn');
+
+const jsonURL = "https://raw.githubusercontent.com/sudo-enginner/test/main/abcd.json?cache=" + Date.now();
+const placeholder = "https://via.placeholder.com/300?text=No+Image";
+
+let allImages = [];
+
+// Render gallery cards
+function renderGallery(images) {
+  galleryEl.innerHTML = '';
+  images.forEach(img => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${img.url}" alt="${img.name}" onerror="this.src='${placeholder}'">
+      <p>${img.name}</p>
+    `;
+    card.addEventListener('click', () => {
+      modalTitle.textContent = img.name;
+      modalImg.src = img.url;
+      modalImg.alt = img.name;
+      modalDesc.textContent = img.description;
+      modal.style.display = 'flex';
+    });
+    galleryEl.appendChild(card);
+  });
+}
+
+// Fetch JSON and initialize gallery
+fetch(jsonURL)
+  .then(res => res.json())
+  .then(data => {
+    allImages = data.record;
+    renderGallery(allImages);
+  })
+  .catch(err => {
+    console.error("Failed to fetch JSON:", err);
+    galleryEl.innerHTML = "<p>Failed to load gallery.</p>";
+  });
+
+// Image modal close
+closeBtn.addEventListener('click', () => {
+  modal.style.display = 'none';
+});
+modal.addEventListener('click', (e) => {
+  if(e.target === modal) modal.style.display = 'none';
+});
+
+// Search functionality
+searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase();
+  const filtered = allImages.filter(img => img.name.toLowerCase().includes(query));
+  renderGallery(filtered);
+});
+
+// Help modal functionality
+helpBtn.addEventListener('click', () => {
+  helpModal.style.display = 'flex';
+});
+helpCloseBtn.addEventListener('click', () => {
+  helpModal.style.display = 'none';
+});
+helpModal.addEventListener('click', (e) => {
+  if(e.target === helpModal) helpModal.style.display = 'none';
+});
+</script>
+
+</body>
+</html>
