@@ -1,15 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-E782MBFM9L"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-E782MBFM9L');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jholey Database</title>
@@ -19,8 +10,6 @@
     padding: 20px;
     background: #f7f7f7;
   }
-
-  /* Header */
   .header {
     display: flex;
     justify-content: space-between;
@@ -28,48 +17,23 @@
     margin-bottom: 20px;
     flex-wrap: wrap;
   }
-
   .header h1 {
     margin: 0;
-    font-size: 32px;
+    font-size: 28px;
   }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
   .search-container input {
-    padding: 10px 15px;
-    width: 250px;
+    padding: 10px;
+    width: 200px;
     max-width: 100%;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 16px;
   }
-
-  .help-btn {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    background: #007bff;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .help-btn:hover {
-    background: #0056b3;
-  }
-
-  /* Gallery */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
   }
-
   .card {
     cursor: pointer;
     border: 1px solid #ccc;
@@ -79,23 +43,18 @@
     transition: transform 0.2s;
     background: #fff;
   }
-
   .card:hover {
     transform: scale(1.05);
   }
-
   .card img {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
   }
-
   .card p {
     font-weight: bold;
     margin: 5px 0;
   }
-
-  /* Modals */
   .modal {
     display: none; 
     position: fixed;
@@ -105,7 +64,6 @@
     align-items: center;
     z-index: 1000;
   }
-
   .modal-content {
     background: white;
     padding: 20px;
@@ -113,13 +71,11 @@
     max-width: 500px;
     text-align: center;
   }
-
   .modal img {
     width: 100%;
     border-radius: 10px;
     margin-top: 10px;
   }
-
   .close-btn {
     margin-top: 10px;
     padding: 5px 10px;
@@ -129,24 +85,41 @@
     background: #333;
     color: #fff;
   }
+  .form-btn {
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .form-modal .modal-content {
+    max-width: 90%;
+    width: 90%;
+    height: 90%;
+}
+
+.form-modal iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+}
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
   <h1>Jholey Database</h1>
-   <h6>Click the Jholey for description</h6>
-  <div class="header-right">
-    <button id="help-btn" class="help-btn">How to Upload</button>
-    <div class="search-container">
-      <input type="text" id="search" placeholder="Enter bheda's name">
-    </div>
-    
+
+<button class="form-btn" id="open-form">Add a Jholey</button>
+  <div class="search-container">
+    <input type="text" id="search" placeholder="Enter bheda's name">
   </div>
 </div>
 
-<!-- Gallery -->
+
 <div class="grid" id="gallery"></div>
 
 <!-- Image Modal -->
@@ -159,18 +132,12 @@
   </div>
 </div>
 
-<!-- Help Modal -->
-<div class="modal" id="help-modal">
+<!-- Google Form Modal -->
+<div class="modal form-modal" id="form-modal">
   <div class="modal-content">
-    <h2>How to Upload</h2>
-    <p>Instructions to upload a new Jholey:</p>
-    <ul style="text-align: left;">
-      <li>Step 1: Find Jholey.</li>
-      <li>Step 2: Collect <strong>name</strong>, <strong>description</strong>, and <strong>Image</strong>.(no videos)</li>
-      <li>Step 3: Send it to <a href="https://www.instagram.com/jholeydatabase/" target="_blank"> instagram.com/jholeydatabase/</a  </li>
-      <li>Step 4: The new entry will appear after a quick review, atmost 24 hr.</li>
-    </ul>
-    <button class="close-btn" id="help-close-btn">Close</button>
+    <h2>Submit Your Poster</h2>
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdk_qpHR_ClYcqqHCezEZfZcWLDq2W6okyRWj2i6jgJlQ6ibQ/viewform?embedded=true">Loading…</iframe>
+    <button class="close-btn" id="close-form-btn">Close</button>
   </div>
 </div>
 
@@ -181,19 +148,17 @@ const modalTitle = document.getElementById('modal-title');
 const modalImg = document.getElementById('modal-img');
 const modalDesc = document.getElementById('modal-desc');
 const closeBtn = document.getElementById('close-btn');
-
 const searchInput = document.getElementById('search');
 
-const helpBtn = document.getElementById('help-btn');
-const helpModal = document.getElementById('help-modal');
-const helpCloseBtn = document.getElementById('help-close-btn');
+const formModal = document.getElementById('form-modal');
+const openFormBtn = document.getElementById('open-form');
+const closeFormBtn = document.getElementById('close-form-btn');
 
 const jsonURL = "https://raw.githubusercontent.com/sudo-enginner/test/main/abcd.json?cache=" + Date.now();
 const placeholder = "https://via.placeholder.com/300?text=No+Image";
 
 let allImages = [];
 
-// Render gallery cards
 function renderGallery(images) {
   galleryEl.innerHTML = '';
   images.forEach(img => {
@@ -214,7 +179,6 @@ function renderGallery(images) {
   });
 }
 
-// Fetch JSON and initialize gallery
 fetch(jsonURL)
   .then(res => res.json())
   .then(data => {
@@ -226,13 +190,8 @@ fetch(jsonURL)
     galleryEl.innerHTML = "<p>Failed to load gallery.</p>";
   });
 
-// Image modal close
-closeBtn.addEventListener('click', () => {
-  modal.style.display = 'none';
-});
-modal.addEventListener('click', (e) => {
-  if(e.target === modal) modal.style.display = 'none';
-});
+closeBtn.addEventListener('click', () => modal.style.display = 'none');
+modal.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
 
 // Search functionality
 searchInput.addEventListener('input', () => {
@@ -241,16 +200,10 @@ searchInput.addEventListener('input', () => {
   renderGallery(filtered);
 });
 
-// Help modal functionality
-helpBtn.addEventListener('click', () => {
-  helpModal.style.display = 'flex';
-});
-helpCloseBtn.addEventListener('click', () => {
-  helpModal.style.display = 'none';
-});
-helpModal.addEventListener('click', (e) => {
-  if(e.target === helpModal) helpModal.style.display = 'none';
-});
+// Form modal functionality
+openFormBtn.addEventListener('click', () => formModal.style.display = 'flex');
+closeFormBtn.addEventListener('click', () => formModal.style.display = 'none');
+formModal.addEventListener('click', (e) => { if(e.target === formModal) formModal.style.display = 'none'; });
 </script>
 
 </body>
